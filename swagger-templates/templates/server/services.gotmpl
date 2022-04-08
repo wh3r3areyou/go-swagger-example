@@ -1,0 +1,28 @@
+package services
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+
+import (
+	"{{ $mod_path }}/internal/repositories"
+	"{{ $mod_path }}/internal/requests"
+	 {{ range $index, $op := .Tags }}
+	{{ .Name}}Srv "{{ $mod_path }}/pkg/{{ dasherize .Name }}/services"
+	  {{ end }}
+)
+
+type Services struct {
+
+     {{ range $index, $op := .Tags }}
+        {{ pascalize .Name }}Service {{ .Name}}Srv.{{ pascalize .Name }}er
+     {{ end }}
+
+}
+
+func InitServices(repos *repositories.Repositories, requests *requests.Requests) *Services {
+	return &Services{
+	    {{ range $index, $op := .Tags }}
+           {{ pascalize .Name }}Service: {{ .Name}}Srv.Init{{ pascalize .Name }}Service(repos.{{ pascalize .Name }}Repository, requests.{{ pascalize .Name }}Requests),
+             {{ end }}
+        }
+}

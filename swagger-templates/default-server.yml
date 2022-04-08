@@ -1,0 +1,49 @@
+layout:
+  application:
+    - name: app
+      source: serverApp
+      target: "./internal/app"
+      file_name: "app.go"
+      skip_exists: true
+
+    - name: main
+      source: serverMain
+      target: "./cmd/server"
+      file_name: "main.go"
+      skip_exists: true
+
+    - name: config
+      source: serverConfig
+      target: "./internal/config"
+      file_name: "config.go"
+      skip_exists: true
+
+    - name: response
+      source: serverResponse
+      target: "./internal/response"
+      file_name: "response.go"
+      skip_exists: true
+
+    - name: repositories
+      source: serverRepositories
+      target: "./internal/repositories"
+      file_name: "repositories.go"
+      skip_exists: true
+
+    - name: controllers
+      source: serverControllers
+      target: "./internal/controllers"
+      file_name: "controllers.go"
+      skip_exists: true
+
+    - name: handler
+      source: serverHandler
+      target: "./internal/handler"
+      file_name: "handler.go"
+      skip_exists: true
+
+    - name: requests
+      source: serverRequests
+      target: "./internal/requests"
+      file_name: "requests.go"
+      skip_exists: true

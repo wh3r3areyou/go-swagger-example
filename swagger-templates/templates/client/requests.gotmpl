@@ -1,0 +1,17 @@
+package requests
+
+{{ $name_service := .Name }}
+
+type {{ $name_service }}Requests struct {
+}
+
+type (
+	{{ $name_service }}er interface {
+
+	}
+
+)
+
+func Init{{ $name_service }}Requests() {{ $name_service }}er {
+	return &{{ $name_service }}Requests{}
+}

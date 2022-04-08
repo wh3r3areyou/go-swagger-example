@@ -1,0 +1,7 @@
+layout:
+  models:
+    - name: models
+      source: modelsMod
+      target: "./pkg/models"
+      file_name: "{{ snakize (pascalize .Name) }}.go"
+      skip_exists: true

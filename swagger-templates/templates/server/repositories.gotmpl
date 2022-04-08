@@ -1,0 +1,23 @@
+package repositories
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+import (
+	"database/sql"
+    "{{ $mod_path }}/pkg/client/repositories"
+
+)
+
+type Repositories struct {
+    {{ range $index, $op := .Tags }}
+      	{{ pascalize .Name }}Repository repositories.{{ pascalize .Name }}er
+     {{ end }}
+}
+
+func InitRepositories(db *sql.DB) *Repositories {
+	return &Repositories{
+	     {{ range $index, $op := .Tags }}
+		{{ pascalize .Name }}Repository: repositories.Init{{ pascalize .Name }}Repository(db),
+        {{ end }}
+    }
+}

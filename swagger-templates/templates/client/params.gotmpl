@@ -1,0 +1,42 @@
+package parameters
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+import (
+    "{{ $mod_path }}/pkg/models"
+)
+type {{ pascalize .Name }}Params struct {
+  {{- range .Params }}
+    {{- if .Description }}
+
+  /* {{ pascalize .Name }}.
+
+     {{ blockcomment .Description }}
+      {{- if or .SwaggerFormat .Default }}
+        {{ print "" }}
+        {{- if .SwaggerFormat }}
+     Format: {{ .SwaggerFormat }}
+        {{- end }}
+        {{- if .Default }}
+     Default: {{ json .Default }}
+        {{- end }}
+      {{- end }}
+  */
+    {{- else }}
+
+  // {{ pascalize .Name }}.
+      {{- if or .SwaggerFormat .Default }}
+  //
+        {{- if .SwaggerFormat }}
+  // Format: {{ .SwaggerFormat }}
+        {{- end }}
+        {{- if .Default }}
+  // Default: {{ json .Default }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+
+  {{ pascalize .Name }}  {{ if and (not .IsArray) (not .IsMap) (not .HasDiscriminator) (not .IsInterface) (not .IsStream) (or .IsNullable  ) }}{{ end }}{{ if not .IsFileParam }}{{ .GoType }}{{ else }}runtime.NamedReadCloser{{ end }}
+  {{- end }}
+
+}

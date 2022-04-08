@@ -1,0 +1,10 @@
+package models
+
+{{- if .IncludeModel }}
+  {{- if .IsExported }}
+// {{ pascalize .Name }} {{ template "docstring" . }}
+    {{- template "annotations" . }}
+  {{- end }}
+      {{ if .Name }}type {{ if not .IsExported }}{{ .Name }}{{ else }}{{ pascalize .Name }}{{ end }}{{ end }} {{ template "schemaBody" . }}
+{{- end }}
+

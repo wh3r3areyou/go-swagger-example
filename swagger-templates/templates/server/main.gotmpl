@@ -1,0 +1,33 @@
+package main
+
+{{ $name := .Name }}
+{{ $operations := .Operations }}
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+import (
+	"github.com/joho/godotenv"
+	loggrus "github.com/sirupsen/logrus"
+	"{{ $mod_path }}/internal/app"
+	"{{ $mod_path }}/internal/config"
+)
+
+// @title {{ .Info.InfoProps.Title }}
+// @version {{ .Info.InfoProps.Version }}
+// @license {{ .Info.InfoProps.License }}
+// @description {{ .Info.InfoProps.Description }}
+// @host {{ .Host }}
+// @BasePath {{ .BasePath }}
+
+
+func main() {
+	err := config.InitConfig()
+
+	if err != nil {
+		loggrus.Fatal("Error with config = " + err.Error())
+	}
+
+	if err = godotenv.Load("/app/.env"); err != nil {
+		loggrus.Fatal("Not found .env")
+	}
+
+	app.Run()
+}

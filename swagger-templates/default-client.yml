@@ -1,0 +1,27 @@
+layout:
+  application:
+    - name: service
+      source: clientService
+      target: "./pkg/client/services"
+      file_name: "{{ snakize (pascalize .Name) }}_services.go"
+      skip_exists: true
+    - name: service
+      source: clientController
+      target: "./pkg/client/controllers"
+      file_name: "{{ snakize (pascalize .Name) }}_controller.go"
+      skip_exists: true
+    - name: requests
+      source: clientRequests
+      target: "./pkg/client/requests"
+      file_name: "{{ snakize (pascalize .Name) }}_requests.go"
+      skip_exists: true
+    - name: requests
+      source: clientRepositories
+      target: "./pkg/client/repositories"
+      file_name: "{{ snakize (pascalize .Name) }}_repositories.go"
+      skip_exists: true
+  operations:
+    - name: parameters
+      source: clientParams
+      target: "./pkg/models/parameters"
+      file_name: "{{ snakize (pascalize .Name) }}_parameters.go"

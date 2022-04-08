@@ -1,0 +1,87 @@
+package controllers
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"{{ $mod_path }}/internal/response"
+	"{{ $mod_path }}/pkg/client/models"
+	"{{ $mod_path }}/pkg/client/repositories"
+	"{{ $mod_path }}/pkg/client/requests"
+	"{{ $mod_path }}/pkg/models/parameters"
+	"net/http"
+	"strconv"
+)
+
+{{ $name_controller := .Name }}
+
+type {{ pascalize .Name }}Controller struct {
+	repo     repositories.{{ pascalize .Name }}er
+	requests requests.{{ pascalize .Name }}er
+}
+
+type (
+	{{$name_controller}}er interface {
+	{{range $index, $op := .Operations}}
+	    {{ pascalize .Name }}
+	{{ end }}
+	}
+
+    {{range $index, $op := .Operations}}
+    	    {{ pascalize .Name }} interface {
+    	        {{ pascalize .Name }}(c *gin.Context)
+    	    }
+    {{ end }}
+
+)
+
+func Init{{$name_controller}}Controller(repo repositories.{{ pascalize .Name }}er, requests requests.{{ pascalize .Name }}er) {{ pascalize .Name }}er {
+	return &{{ pascalize .Name }}Controller{
+		repo:     repo,
+		requests: requests,
+	}
+}
+
+
+{{range $index, $op := .Operations}}
+
+
+// {{ pascalize .Name }} {{ pascalize .Name }} godoc
+// @Summary {{ .Summary }}
+// @ID {{ pascalize .Name }}
+// @Schemes
+// @Description {{ .Description }}
+// @Tags{{ range $index2, $tag := .Tags }} {{ $tag }} {{ end }}
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.successResponse
+// @Router {{ .Path }} [{{ .Method }}]
+func (s *{{ pascalize $name_controller }}Controller) {{ pascalize .Name }}(c *gin.Context) {
+       
+
+        {{ if or (eq .Method "POST") (eq .Method "PUT") (eq .Method "DELETE") }}
+
+        var params parameters.{{ pascalize .Name }}Params
+
+        if err := c.ShouldBindJSON(&params); err != nil {
+        		logrus.Println(err.Error())
+        		response.NewErrorResponse(c, 400, err.Error())
+        		return
+        	}
+
+        {{ else }}
+            {{ range $ic, $c := .Params }}
+                    {{ $c.Name }}:= c.Param("{{ $c.Name }}")
+                    logrus.Println({{ $c.Name }})
+            {{ end }}
+        {{ end }}
+
+
+        response.NewSuccessResponse(c, 200, struct {}{})
+
+}
+{{ end }}
+
+
+

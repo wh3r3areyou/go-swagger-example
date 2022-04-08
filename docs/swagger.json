@@ -1,0 +1,93 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Swagger API for OBS-MS-ERRORS",
+        "title": "OBS-ms-errors API",
+        "contact": {},
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8001",
+    "basePath": "/",
+    "paths": {
+        "/errors/:id": {
+            "get": {
+                "description": "Get erron in db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get error in db",
+                "operationId": "GetError",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/successResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/errors/all": {
+            "get": {
+                "description": "Get all errors in db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all errors in db",
+                "operationId": "AllErrors",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/successResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/errors/save": {
+            "post": {
+                "description": "Save error in db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Save error in db",
+                "operationId": "SaveError",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/successResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "successResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

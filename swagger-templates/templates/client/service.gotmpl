@@ -1,0 +1,17 @@
+package services
+
+{{ $name_service := .Name }}
+
+type {{ $name_service }}Service struct {
+}
+
+type (
+	{{ $name_service }}er interface {
+
+	}
+
+)
+
+func Init{{ $name_service }}Service() {{ $name_service }}er {
+	return &{{ $name_service }}Service{}
+}

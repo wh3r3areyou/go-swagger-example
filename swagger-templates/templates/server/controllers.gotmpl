@@ -1,0 +1,26 @@
+package controllers
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+
+import (
+	"{{ $mod_path }}/internal/repositories"
+	"{{ $mod_path }}/internal/requests"
+	"{{ $mod_path }}/pkg/client/controllers"
+)
+
+type Controllers struct {
+
+     {{ range $index, $op := .Tags }}
+        {{ pascalize .Name }}Controller controllers.{{ pascalize .Name }}er
+     {{ end }}
+
+}
+
+func InitControllers(repos *repositories.Repositories, requests *requests.Requests) *Controllers {
+	return &Controllers{
+	    {{ range $index, $op := .Tags }}
+           {{ pascalize .Name }}Controller: controllers.Init{{ pascalize .Name }}Controller(repos.{{ pascalize .Name }}Repository, requests.{{ pascalize .Name }}Requests),
+             {{ end }}
+        }
+}

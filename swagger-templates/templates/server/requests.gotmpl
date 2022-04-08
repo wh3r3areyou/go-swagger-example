@@ -1,0 +1,21 @@
+package requests
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+import (
+      "{{ $mod_path }}/pkg/client/requests"
+)
+
+type Requests struct {
+ {{ range $index, $op := .Tags }}
+	{{ pascalize .Name }}Requests requests.{{ pascalize .Name }}er
+ {{ end }}
+}
+
+func InitRequests() *Requests {
+	return &Requests{
+	 {{ range $index, $op := .Tags }}
+		{{ pascalize .Name }}Requests: requests.Init{{ pascalize .Name }}Requests(),
+     {{ end }}
+	}
+}

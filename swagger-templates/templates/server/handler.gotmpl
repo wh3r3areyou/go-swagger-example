@@ -1,0 +1,82 @@
+package handler
+
+{{ $mod_path :=  .GenCommon.TargetImportPath }}
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	docs "{{ $mod_path}}/docs"
+	"{{ $mod_path }}/internal/controllers"
+)
+
+{{ $name_service := .Name }}
+
+
+type Handler struct {
+	Controllers *controllers.Controllers
+}
+
+func InitHandler(controllers *controllers.Controllers) *Handler {
+	return &Handler{Controllers: controllers}
+}
+
+func (h *Handler) initRoutes(router *gin.Engine) *gin.Engine {
+	docs.SwaggerInfo.BasePath = "/api/v1"
+
+	v1 := router.Group("{{ .BasePath }}")
+
+	{{range $index, $op := .Operations}}
+        {{ $methodRoute := .Method }}
+        {{ $path := .Path }}
+        {{ $nameFunc := .Name }}
+    {{ range $index, $op := .Tags }}
+          v1.{{ $methodRoute   }}(ginizePath("{{ $path }}"), h.Controllers.{{ (pascalize $op ) }}Controller.{{ pascalize $nameFunc }})
+    {{ end }}
+
+	{{ end }}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	return router
+}
+
+func (h *Handler) RunServer() {
+	router := gin.Default()
+    	router = h.initRoutes(router)
+
+    	var srv http.Server
+
+    	go func() {
+    		srv = http.Server{
+    			Addr:           ":" + viper.GetString("apiserver_port"),
+    			Handler:        router,
+    			MaxHeaderBytes: 1 << 20, // 1 MB
+    			ReadTimeout:    10 * time.Second,
+    			WriteTimeout:   10 * time.Second,
+    		}
+    		err := srv.ListenAndServe()
+
+    		if err != nil {
+    			logrus.Fatalf("error occured while running http server: %s", err.Error())
+    		}
+    	}()
+
+    	logrus.Infof("RESTApi server {{ .Name }} listening at %s", viper.GetString("apiserver_port"))
+
+    	if err := srv.Shutdown(context.Background()); err != nil {
+    		logrus.Errorf("error occured on server shutting down: %s", err.Error())
+    	}
+
+    	quit := make(chan os.Signal, 1)
+    	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+    	<-quit
+
+    	logrus.Print("RESTApi server {{ .Name }} Shutting Down")
+}
+
+func ginizePath(path string) string {
+	return strings.Replace(strings.Replace(path, "{", ":", -1), "}", "", -1)
+}
+
